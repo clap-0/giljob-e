@@ -1,0 +1,7 @@
+package com.likelion.giljobe.domain;
+
+public enum Residence {
+    ALL, SEOUL, BUSAN, DAEGU, INCHEON, GWANGJU, DAEJEON, ULSAN,
+    GYOUNGGI, GANGWON, CHUNGBUK, CHUNGNAM, JEONBUK, JEONNAM, GYEONGBUK, GYEONGNAM,
+    JEJU, SEJONG
+}
