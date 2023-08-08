@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Policy {
+public class Policy extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,26 +41,23 @@ public class Policy {
 
     private Integer ageInfoMax;     // 참여요건 - 연령 최대치
 
-    @OneToMany
-    @JoinColumn(name = "policy_id")
-    private List<ResidenceEntity> residence = new ArrayList<>();    // 참여요건 - 거주지
+    @OneToMany(mappedBy = "policy")
+    private List<PolicyResidence> policyResidenceList = new ArrayList<>();    // 참여요건 - 거주지
 
     @Column(columnDefinition = "TEXT")
     private String residenceContent;    // 참여요건 - 거주지 및 소득 내용
 
-    @OneToMany
-    @JoinColumn(name = "policy_id")
-    private List<EducationEntity> education = new ArrayList<>();    // 참여요건 - 학력
+    @OneToMany(mappedBy = "policy")
+    private List<PolicyEducation> policyEducationList = new ArrayList<>();    // 참여요건 - 학력
 
     @Column(columnDefinition = "TEXT")
     private String educationContent;    // 참여요건 - 학력 내용
 
-    @OneToMany
-    @JoinColumn(name = "policy_id")
-    private List<EmploymentEntity> employment = new ArrayList<>();    // 참여요건 - 취업상태
+    @OneToMany(mappedBy = "policy")
+    private List<PolicyJobStatus> policyJobStatusList = new ArrayList<>();    // 참여요건 - 취업상태
 
     @Column(columnDefinition = "TEXT")
-    private String employmentContent;    // 참여요건 - 취업상태 내용
+    private String jobStatusContent;    // 참여요건 - 취업상태 내용
 
     private String major;       // 참여요건 - 전공
 
@@ -74,9 +70,5 @@ public class Policy {
     private String restrictedParticipant;   // 참여요건 - 참여제한대상
 
     private Long views;     // 조회수
-
-    private LocalDateTime createdAt;    // 생성일
-
-    private LocalDateTime lastModifiedAt;   // 수정일
 }
 

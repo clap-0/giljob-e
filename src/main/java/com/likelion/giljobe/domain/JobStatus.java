@@ -7,16 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "education")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EducationEntity {
+public class JobStatus {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private Education education;
+    private JobStatusEnum name;
 }

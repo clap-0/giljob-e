@@ -1,6 +1,6 @@
 package com.likelion.giljobe.domain;
 
-public enum Employment {
+public enum JobStatusEnum {
     ALL,                // 전체
     JOB_SEEKER,         // 취업 준비생
     ENTREPRENEUR,       // (예비) 창업자

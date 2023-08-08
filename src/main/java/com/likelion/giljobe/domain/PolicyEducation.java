@@ -7,15 +7,19 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "employment")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmploymentEntity {
+public class PolicyEducation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
-    private Employment employment;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "policy_id")
+    private Policy policy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "education_id")
+    private Education education;
 }

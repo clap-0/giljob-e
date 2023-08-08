@@ -7,15 +7,19 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "residence")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResidenceEntity {
+public class PolicyResidence {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "policy_id")
+    private Policy policy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "residence_id")
     private Residence residence;
 }

@@ -10,11 +10,16 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Residence {
+public class PolicyJobStatus {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
-    private ResidenceEnum name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "policy_id")
+    private Policy policy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_status_id")
+    private JobStatus jobStatus;
 }
