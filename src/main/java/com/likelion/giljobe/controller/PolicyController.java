@@ -3,11 +3,9 @@ package com.likelion.giljobe.controller;
 import com.likelion.giljobe.dto.PolicyDetailResponseDto;
 import com.likelion.giljobe.dto.PolicyListRequestDto;
 import com.likelion.giljobe.dto.PolicyListResponseDto;
+import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import com.likelion.giljobe.service.PolicyService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,11 +30,15 @@ public class PolicyController {
     private final PolicyService policyService;
 
     @ApiOperation(value = "정책 리스트 조회", notes = "검색어 및 필터링 조건을 사용해서 정책 리스트를 조회한다.\n" +
-            "검색어나 필터링 조건들은 null 값이 될 수 있다.")
+            "검색어나 필터링 조건들은 null 값이 될 수 있다.\n" +
+            "쿼리스트링으로 전달할 것 (e.g. /api/policies?age=22&keyword=창업")
     @ApiResponses({
             @ApiResponse(code = 200, message = "조회 성공")
     })
     @GetMapping
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "age", value = "연령", example="22")
+    })
     public ResponseEntity<Page<PolicyListResponseDto>> getPolicylist(
             @Parameter(name = "requestDto", description = "검색어 및 필터링조건", in = QUERY, required = true)
                 @Valid PolicyListRequestDto requestDto,
@@ -52,14 +54,15 @@ public class PolicyController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "정책 상세 조회", notes = "정책 ID(e.g. R2023070716137)를 사용해서 해당 정책의 상세 정보를 조회한다.")
+    @ApiOperation(value = "정책 상세 조회", notes = "정책 ID를 사용해서 해당 정책의 상세 정보를 조회한다.\n" +
+            "Path variable로 전달할 것 (e.g. /api/policies/R2023050912273")
     @ApiResponses({
             @ApiResponse(code = 200, message = "조회 성공"),
             @ApiResponse(code = 404, message = "주어진 정책 ID를 가진 정책이 없음")
     })
     @GetMapping("/{bizId}")
     public ResponseEntity<PolicyDetailResponseDto> getPolicy(
-            @Parameter(name = "bizId", description = "정책 ID. 쿼리스트링으로 줄 것!", in = PATH, required = true)
+            @Parameter(name = "bizId", description = "정책 ID", in = PATH, required = true)
                 @PathVariable(name = "bizId") String bizId
     ){
         try {
@@ -68,5 +71,20 @@ public class PolicyController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @ApiOperation(value = "정책 추가", notes = "데이터베이스에 정책을 추가한다.\n" +
+            "프론트에서 사용하지 않습니다!")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "저장 성공")
+    })
+    @PostMapping
+    public ResponseEntity<Void> createPolicy(
+            @Parameter(name = "policySaveRequestDto", description = "저장할 정책 정보", in = PATH, required = true)
+                @RequestBody @Valid PolicySaveRequestDto policySaveRequestDto
+    ) {
+        this.policyService.save(policySaveRequestDto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
