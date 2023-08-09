@@ -7,10 +7,12 @@ import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import com.likelion.giljobe.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +111,7 @@ public class PolicyService {
      * @return - PolicyFindResponseDto 인스턴스를 포함하는 Page 인스턴스
      */
     public Page<PolicyFindResponseDto> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable) {
-        return policyRepository.findByFilter(requestDto, pageable);
+        return policyRepository.findByFilter(requestDto, pageable)
+                .orElse(new PageImpl<>(new ArrayList<>(), Pageable.ofSize(0), 0));
     }
 }

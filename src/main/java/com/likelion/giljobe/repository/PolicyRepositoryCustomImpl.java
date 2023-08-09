@@ -13,6 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
@@ -22,11 +23,11 @@ public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
      * 검색어와 필터링 조건을 통해 정책을 조회한다.
      *
      * @param requestDto - 검색어 및 필터링 조건이 포함된 요청값
-     * @param pageable - 페이지네이션을 위한 Pageable 인스턴스
+     * @param pageable   - 페이지네이션을 위한 Pageable 인스턴스
      * @return - PolicyFindResponseDto 인스턴스를 포함하는 Page 인스턴스
      */
     @Override
-    public Page<PolicyFindResponseDto> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable) {
+    public Optional<Page<PolicyFindResponseDto>> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable) {
 
         QPolicy qPolicy = QPolicy.policy;
 
@@ -74,8 +75,8 @@ public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
                         residenceIn(requestDto.getResidence(), qPolicy)
                 );
 
-        return PageableExecutionUtils
-                .getPage(content, pageable, countQuery::fetchCount);
+        return Optional.of(PageableExecutionUtils
+                .getPage(content, pageable, countQuery::fetchCount));
     }
 
     /**

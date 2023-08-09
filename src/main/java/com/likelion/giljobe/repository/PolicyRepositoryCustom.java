@@ -5,7 +5,9 @@ import com.likelion.giljobe.dto.PolicyFindResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 
 public interface PolicyRepositoryCustom {
-    Page<PolicyFindResponseDto> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable);
+    Optional<Page<PolicyFindResponseDto>> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable);
 }
