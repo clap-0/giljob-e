@@ -113,9 +113,18 @@ public class PolicyService {
                 .orElse(new PageImpl<>(new ArrayList<>(), Pageable.ofSize(1), 0));
     }
 
+    /**
+     * 정책 ID를 통해 특정 정책의 상세 정보를 조회하는 메서드이다.
+     *
+     * @param bizId - 조회할 정책의 ID
+     * @return - 조회된 정책의 상세 내용
+     */
     public PolicyDetailResponseDto findByBizId(String bizId) {
         Policy policy = (Policy) policyRepository.findByBizId(bizId)
                 .orElseThrow(NoSuchElementException::new);
+
+        // 조회수 증가
+        policy.addViews(1);
 
         return PolicyDetailResponseDto.of(policy);
     }

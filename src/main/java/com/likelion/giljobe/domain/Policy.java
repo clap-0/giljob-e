@@ -75,21 +75,16 @@ public class Policy extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String restrictedParticipant;   // 참여요건 - 참여제한대상
 
-    private Long views;     // 조회수
+    @Builder.Default
+    private Long views = 0L;     // 조회수
 
-    public void addPolicyEducation(PolicyEducation policyEducation) {
-        this.policyEducationList.add(policyEducation);
-        policyEducation.setPolicy(this);
-    }
-
-    public void addPolicyJobStatus(PolicyJobStatus policyJobStatus) {
-        this.policyJobStatusList.add(policyJobStatus);
-        policyJobStatus.setPolicy(this);
-    }
-
-    public void addPolicyResidence(PolicyResidence policyResidence) {
-        this.policyResidenceList.add(policyResidence);
-        policyResidence.setPolicy(this);
+    /**
+     * 조회수를 주어진 양만큼 증가시키는 메서드이다.
+     *
+     * @param quantity - 증가분
+     */
+    public void addViews(int quantity) {
+        this.views += quantity;
     }
 }
 
