@@ -1,15 +1,13 @@
 package com.likelion.giljobe.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PolicyEducation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +20,14 @@ public class PolicyEducation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "education_id")
     private Education education;
+
+    public static PolicyEducation create(Policy policy, Education education) {
+        PolicyEducation policyEducation = new PolicyEducation();
+        policyEducation.setPolicy(policy);
+        policyEducation.setEducation(education);
+
+        policy.getPolicyEducationList().add(policyEducation);
+
+        return policyEducation;
+    }
 }

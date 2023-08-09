@@ -1,6 +1,8 @@
 package com.likelion.giljobe.domain;
 
+import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Policy extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,19 +44,22 @@ public class Policy extends BaseTimeEntity {
 
     private Integer ageInfoMax;     // 참여요건 - 연령 최대치
 
-    @OneToMany(mappedBy = "policy")
+    @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<PolicyResidence> policyResidenceList = new ArrayList<>();    // 참여요건 - 거주지
 
     @Column(columnDefinition = "TEXT")
     private String residenceContent;    // 참여요건 - 거주지 및 소득 내용
 
-    @OneToMany(mappedBy = "policy")
+    @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<PolicyEducation> policyEducationList = new ArrayList<>();    // 참여요건 - 학력
 
     @Column(columnDefinition = "TEXT")
     private String educationContent;    // 참여요건 - 학력 내용
 
-    @OneToMany(mappedBy = "policy")
+    @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<PolicyJobStatus> policyJobStatusList = new ArrayList<>();    // 참여요건 - 취업상태
 
     @Column(columnDefinition = "TEXT")
@@ -70,5 +76,20 @@ public class Policy extends BaseTimeEntity {
     private String restrictedParticipant;   // 참여요건 - 참여제한대상
 
     private Long views;     // 조회수
+
+    public void addPolicyEducation(PolicyEducation policyEducation) {
+        this.policyEducationList.add(policyEducation);
+        policyEducation.setPolicy(this);
+    }
+
+    public void addPolicyJobStatus(PolicyJobStatus policyJobStatus) {
+        this.policyJobStatusList.add(policyJobStatus);
+        policyJobStatus.setPolicy(this);
+    }
+
+    public void addPolicyResidence(PolicyResidence policyResidence) {
+        this.policyResidenceList.add(policyResidence);
+        policyResidence.setPolicy(this);
+    }
 }
 

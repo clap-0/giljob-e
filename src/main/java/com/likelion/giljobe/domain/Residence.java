@@ -1,6 +1,7 @@
 package com.likelion.giljobe.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Residence {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +19,10 @@ public class Residence {
 
     @Enumerated(value = EnumType.STRING)
     private ResidenceEnum name;
+
+    public static Residence of(ResidenceEnum residenceEnum) {
+        return Residence.builder()
+                .name(residenceEnum)
+                .build();
+    }
 }
