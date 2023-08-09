@@ -1,8 +1,9 @@
 package com.likelion.giljobe.service;
 
 import com.likelion.giljobe.domain.*;
-import com.likelion.giljobe.dto.PolicyFindRequestDto;
-import com.likelion.giljobe.dto.PolicyFindResponseDto;
+import com.likelion.giljobe.dto.PolicyDetailResponseDto;
+import com.likelion.giljobe.dto.PolicyListRequestDto;
+import com.likelion.giljobe.dto.PolicyListResponseDto;
 import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import com.likelion.giljobe.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,10 +106,17 @@ public class PolicyService {
      *
      * @param requestDto - 검색어 및 필터링 조건이 포함된 요청값
      * @param pageable - 페이지네이션을 위한 Pageable 인스턴스
-     * @return - PolicyFindResponseDto 인스턴스를 포함하는 Page 인스턴스
+     * @return - PolicyListResponseDto 인스턴스를 포함하는 Page 인스턴스
      */
-    public Page<PolicyFindResponseDto> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable) {
+    public Page<PolicyListResponseDto> findByFilter(PolicyListRequestDto requestDto, Pageable pageable) {
         return policyRepository.findByFilter(requestDto, pageable)
-                .orElse(new PageImpl<>(new ArrayList<>(), Pageable.ofSize(0), 0));
+                .orElse(new PageImpl<>(new ArrayList<>(), Pageable.ofSize(1), 0));
+    }
+
+    public PolicyDetailResponseDto findByBizId(String bizId) {
+        Policy policy = (Policy) policyRepository.findByBizId(bizId)
+                .orElseThrow(NoSuchElementException::new);
+
+        return PolicyDetailResponseDto.of(policy);
     }
 }

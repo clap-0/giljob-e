@@ -1,9 +1,9 @@
 package com.likelion.giljobe.repository;
 
 import com.likelion.giljobe.domain.*;
-import com.likelion.giljobe.dto.PolicyFindRequestDto;
-import com.likelion.giljobe.dto.PolicyFindResponseDto;
-import com.likelion.giljobe.dto.QPolicyFindResponseDto;
+import com.likelion.giljobe.dto.PolicyListRequestDto;
+import com.likelion.giljobe.dto.PolicyListResponseDto;
+import com.likelion.giljobe.dto.QPolicyListResponseDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,33 +24,18 @@ public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
      *
      * @param requestDto - 검색어 및 필터링 조건이 포함된 요청값
      * @param pageable   - 페이지네이션을 위한 Pageable 인스턴스
-     * @return - PolicyFindResponseDto 인스턴스를 포함하는 Page 인스턴스
+     * @return - PolicyListResponseDto 인스턴스를 포함하는 Page 인스턴스
      */
     @Override
-    public Optional<Page<PolicyFindResponseDto>> findByFilter(PolicyFindRequestDto requestDto, Pageable pageable) {
+    public Optional<Page<PolicyListResponseDto>> findByFilter(PolicyListRequestDto requestDto, Pageable pageable) {
 
         QPolicy qPolicy = QPolicy.policy;
 
-        List<PolicyFindResponseDto> content = queryFactory
-                .select(new QPolicyFindResponseDto(
+        List<PolicyListResponseDto> content = queryFactory
+                .select(new QPolicyListResponseDto(
                         qPolicy.name,
-                        qPolicy.detail,
-                        qPolicy.bizId,
-                        qPolicy.field,
-                        qPolicy.content,
-                        qPolicy.managePeriod,
-                        qPolicy.applicationPeriod,
-                        qPolicy.scale,
-                        qPolicy.ageInfoMin,
-                        qPolicy.ageInfoMax,
-                        qPolicy.residenceContent,
-                        qPolicy.educationContent,
-                        qPolicy.major,
-                        qPolicy.jobStatusContent,
-                        qPolicy.specialization,
-                        qPolicy.additionalCondition,
-                        qPolicy.restrictedParticipant,
-                        qPolicy.views))
+                        qPolicy.bizId
+                ))
                 .from(qPolicy)
                 .where(
                         keywordContains(requestDto.getKeyword(), qPolicy),
