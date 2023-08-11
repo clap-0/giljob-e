@@ -1,9 +1,6 @@
 package com.likelion.giljobe.controller;
 
-import com.likelion.giljobe.dto.PolicyDetailResponseDto;
-import com.likelion.giljobe.dto.PolicyListRequestDto;
-import com.likelion.giljobe.dto.PolicyListResponseDto;
-import com.likelion.giljobe.dto.PolicySaveRequestDto;
+import com.likelion.giljobe.dto.*;
 import com.likelion.giljobe.service.PolicyService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
@@ -73,6 +70,28 @@ public class PolicyController {
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @ApiOperation(value = "실시간 정책 순위 조회", notes = "주어진 개수만큼 실시간 상위 정책 리스트를 조회한다.\n" +
+            "쿼리스트링으로 전달할 것 (e.g. /api/policies/rank?pageSize=5)\n" +
+            "/api/policies/rank 만 할 경우, 자동으로 디자인대로 5개 조회합니다!!")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "조회 성공")
+    })
+    @GetMapping("/rank")
+    public ResponseEntity<List<PolicyRankResponseDto>> getPolicyRank(
+            @Parameter(name = "pageSize", description = "조회할 정책 개수", in = QUERY, required = true)
+                @RequestParam(defaultValue = "5") Integer pageSize
+    ){
+        List<PolicyRankResponseDto> response;
+
+        try {
+            response = this.policyService.findAllOrderByViewsDesc(pageSize);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ApiOperation(value = "정책 추가", notes = "데이터베이스에 정책을 추가한다.\n" +

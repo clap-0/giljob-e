@@ -1,17 +1,11 @@
 package com.likelion.giljobe.service;
 
 import com.likelion.giljobe.domain.*;
-import com.likelion.giljobe.dto.PolicyDetailResponseDto;
-import com.likelion.giljobe.dto.PolicyListRequestDto;
-import com.likelion.giljobe.dto.PolicyListResponseDto;
-import com.likelion.giljobe.dto.PolicySaveRequestDto;
+import com.likelion.giljobe.dto.*;
 import com.likelion.giljobe.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,6 +115,7 @@ public class PolicyService {
      * @param bizId - 조회할 정책의 ID
      * @return - 조회된 정책의 상세 내용
      */
+    @Transactional
     public PolicyDetailResponseDto findByBizId(String bizId) {
         Policy policy = policyRepository.findByBizId(bizId)
                 .orElseThrow(() -> new EmptyResultDataAccessException(1));
@@ -129,6 +124,30 @@ public class PolicyService {
         policy.addViews(1);
 
         return PolicyDetailResponseDto.of(policy);
+    }
+
+    /**
+     * 정책을 조회수에 대해 내림차순 정렬하여 주어진 개수만큼 반환하는 메서드이다.
+     *
+     * @param pageSize - 조회할 정책 수
+     * @return - 상위 pageSize 개의 정책 정보
+     */
+    public List<PolicyRankResponseDto> findAllOrderByViewsDesc(int pageSize) {
+
+        // 조회수에 내림차순, 이어서 이름에 오름차순으로 조회
+        Sort sort = Sort.by(
+                Sort.Order.desc("views"),
+                Sort.Order.asc("name")
+        );
+
+        Pageable pageable = PageRequest.of(0, pageSize, sort);
+
+        List<Policy> policies = this.policyRepository.findAll(pageable).getContent();
+
+        // Policy를 PolicyRankResponseDto로 변환 후 반환
+        return policies.stream()
+                .map(PolicyRankResponseDto::of)
+                .collect(Collectors.toList());
     }
 
     /**
