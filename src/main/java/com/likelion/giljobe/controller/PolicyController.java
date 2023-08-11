@@ -8,6 +8,7 @@ import com.likelion.giljobe.service.PolicyService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,7 +70,7 @@ public class PolicyController {
         try {
             PolicyDetailResponseDto response = this.policyService.findByBizId(bizId);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
+        } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -77,14 +78,19 @@ public class PolicyController {
     @ApiOperation(value = "정책 추가", notes = "데이터베이스에 정책을 추가한다.\n" +
             "프론트에서 사용하지 않습니다!")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "저장 성공")
+            @ApiResponse(code = 201, message = "저장 성공"),
+            @ApiResponse(code = 409, message = "저장 실패: 이미 데이터베이스에 저장된 bizId 제공")
     })
     @PostMapping
     public ResponseEntity<Void> createPolicy(
             @Parameter(name = "policySaveRequestDto", description = "저장할 정책 정보", in = PATH, required = true)
                 @RequestBody @Valid PolicySaveRequestDto policySaveRequestDto
     ) {
-        this.policyService.save(policySaveRequestDto);
+        try {
+            this.policyService.save(policySaveRequestDto);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

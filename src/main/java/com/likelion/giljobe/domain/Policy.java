@@ -25,7 +25,7 @@ public class Policy extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String detail;  // 정책소개
 
-    @Column(length = 30)
+    @Column(length = 30, unique = true)
     private String bizId;   // 정책번호 e.g. R2023070716137
 
     @Column(length = 10)

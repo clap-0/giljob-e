@@ -7,6 +7,7 @@ import com.likelion.giljobe.dto.PolicyListResponseDto;
 import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import com.likelion.giljobe.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -122,7 +123,7 @@ public class PolicyService {
      */
     public PolicyDetailResponseDto findByBizId(String bizId) {
         Policy policy = policyRepository.findByBizId(bizId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new EmptyResultDataAccessException(1));
 
         // 조회수 증가
         policy.addViews(1);
