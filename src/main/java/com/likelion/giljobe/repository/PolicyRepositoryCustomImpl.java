@@ -102,9 +102,10 @@ public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
      * @return - Predicate
      */
     private BooleanExpression educationIn(EducationEnum educationEnum, QPolicy qPolicy) {
-        if (educationEnum == null) {
+        if (educationEnum == null || educationEnum == EducationEnum.ALL) {
             return null;
         }
+
         return qPolicy.policyEducationList.any()
                 .education.name.eq(educationEnum);
     }
@@ -117,7 +118,7 @@ public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
      * @return - Predicate
      */
     private BooleanExpression jobStatusIn(JobStatusEnum jobStatusEnum, QPolicy qPolicy) {
-        if (jobStatusEnum == null) {
+        if (jobStatusEnum == null || jobStatusEnum == JobStatusEnum.ALL) {
             return null;
         }
         return qPolicy.policyJobStatusList.any()
@@ -132,7 +133,7 @@ public class PolicyRepositoryCustomImpl implements PolicyRepositoryCustom {
      * @return - Predicate
      */
     private BooleanExpression residenceIn(ResidenceEnum residenceEnum, QPolicy qPolicy) {
-        if (residenceEnum == null) {
+        if (residenceEnum == null || residenceEnum == ResidenceEnum.ALL) {
             return null;
         }
         return qPolicy.policyResidenceList.any()
