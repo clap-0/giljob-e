@@ -8,6 +8,7 @@ import com.likelion.giljobe.service.PolicyService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -86,5 +87,24 @@ public class PolicyController {
         this.policyService.save(policySaveRequestDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "정책 삭제", notes = "정책 ID를 사용해서 해당 정책을 삭제한다.\n" +
+            "Path variable로 전달할 것 (e.g. /api/policies/R2023050912273")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "삭제 성공"),
+            @ApiResponse(code = 404, message = "주어진 정책 ID를 가진 정책이 없음")
+    })
+    @DeleteMapping("/{bizId}")
+    public ResponseEntity<Void> deletePolicy(
+            @Parameter(name = "bizId", description = "정책 ID", in = PATH, required = true)
+                @PathVariable(name = "bizId") String bizId
+    ) {
+        try {
+            this.policyService.deleteByBizId(bizId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface PolicyRepository extends JpaRepository<Policy, Long>, PolicyRepositoryCustom {
-    Optional<Object> findByBizId(String bizId);
+    Optional<Policy> findByBizId(String bizId);
 }

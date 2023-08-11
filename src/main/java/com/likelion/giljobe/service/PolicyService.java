@@ -7,6 +7,7 @@ import com.likelion.giljobe.dto.PolicyListResponseDto;
 import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import com.likelion.giljobe.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -120,12 +121,24 @@ public class PolicyService {
      * @return - 조회된 정책의 상세 내용
      */
     public PolicyDetailResponseDto findByBizId(String bizId) {
-        Policy policy = (Policy) policyRepository.findByBizId(bizId)
+        Policy policy = policyRepository.findByBizId(bizId)
                 .orElseThrow(NoSuchElementException::new);
 
         // 조회수 증가
         policy.addViews(1);
 
         return PolicyDetailResponseDto.of(policy);
+    }
+
+    /**
+     * 주어진 정책번호(bizId)를 가진 정책을 삭제한다.
+     *
+     * @param bizId - 삭제할 정책번호
+     */
+    @Transactional
+    public void deleteByBizId(String bizId) {
+        this.policyRepository.delete(
+                this.policyRepository.findByBizId(bizId).orElseThrow(() -> new EmptyResultDataAccessException(1))
+        );
     }
 }
