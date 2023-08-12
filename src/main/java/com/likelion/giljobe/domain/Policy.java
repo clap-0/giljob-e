@@ -1,6 +1,5 @@
 package com.likelion.giljobe.domain;
 
-import com.likelion.giljobe.dto.PolicySaveRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,6 +66,7 @@ public class Policy extends BaseTimeEntity {
 
     private String major;       // 참여요건 - 전공
 
+    @Column(columnDefinition = "TEXT")
     private String specialization; // 참여요건 - 특화분야
 
     @Column(columnDefinition = "TEXT")
