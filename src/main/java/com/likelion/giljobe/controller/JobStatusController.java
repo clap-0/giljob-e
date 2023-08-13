@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
@@ -25,6 +26,8 @@ public class JobStatusController {
 
     private final JobStatusService jobStatusService;
 
+
+    @ApiIgnore
     @ApiOperation(value = "취업상태 저장")
     @ApiResponses({
             @ApiResponse(code = 200, message = "저장 성공")

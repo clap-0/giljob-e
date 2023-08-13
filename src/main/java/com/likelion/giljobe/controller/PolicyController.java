@@ -95,6 +95,7 @@ public class PolicyController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "정책 추가", notes = "데이터베이스에 정책을 추가한다.\n" +
             "프론트에서 사용하지 않습니다!")
     @ApiResponses({
@@ -116,6 +117,7 @@ public class PolicyController {
     }
 
 
+    @ApiIgnore
     @PostMapping("/list")
     public ResponseEntity<Void> createPolicies(
             @RequestBody PolicySaveListRequestDto dtoList
@@ -129,6 +131,7 @@ public class PolicyController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @ApiIgnore
     @ApiOperation(value = "정책 삭제", notes = "정책 ID를 사용해서 해당 정책을 삭제한다.\n" +
             "Path variable로 전달할 것 (e.g. /api/policies/R2023050912273")
     @ApiResponses({
