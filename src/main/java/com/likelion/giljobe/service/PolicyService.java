@@ -29,6 +29,32 @@ public class PolicyService {
      */
     @Transactional
     public void save(PolicySaveRequestDto requestDto) {
+        Policy policy = createPolicy(requestDto);
+
+        this.policyRepository.save(policy);
+    }
+
+    /**
+     * 정책 리스트를 데이터베이스에 저장하는 메서드이다.
+     *
+     * @param requestDtos - 저장될 정책들에 관한 정보
+     */
+    @Transactional
+    public void saveList(List<PolicySaveRequestDto> requestDtos) {
+        for (PolicySaveRequestDto requestDto : requestDtos) {
+            Policy policy = createPolicy(requestDto);
+
+            this.policyRepository.save(policy);
+        }
+    }
+
+    /**
+     * PolicySaveRequestDto를 통해 Policy 엔티티를 생성하고, 연관관계를 설정하는 메서드이다.
+     *
+     * @param requestDto - 저장 요청이 온 정책에 관한 정보
+     * @return - 생성된 Policy 엔티티
+     */
+    private Policy createPolicy(PolicySaveRequestDto requestDto) {
         Policy policy = requestDto.toEntity();
 
         // 참여요건 중 학력 목록을 policy 엔티티에 저장한다.
@@ -93,8 +119,7 @@ public class PolicyService {
                 }
             }
         }
-
-        this.policyRepository.save(policy);
+        return policy;
     }
 
     /**

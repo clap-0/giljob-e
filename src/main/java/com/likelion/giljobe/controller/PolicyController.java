@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -107,6 +108,20 @@ public class PolicyController {
     ) {
         try {
             this.policyService.save(policySaveRequestDto);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/list")
+    public ResponseEntity<Void> createPolicies(
+            @RequestBody PolicySaveListRequestDto dtoList
+    ) {
+        try {
+            this.policyService.saveList(dtoList.getPolicies());
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
