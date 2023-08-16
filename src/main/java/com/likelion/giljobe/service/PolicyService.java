@@ -135,6 +135,18 @@ public class PolicyService {
     }
 
     /**
+     * 검색어와 필터링 조건을 통해 정책을 조회한다.
+     *
+     * @param requestDto - 검색어 및 필터링 조건이 포함된 요청값
+     * @param pageable - 페이지네이션을 위한 Pageable 인스턴스
+     * @return - PolicyListResponseDto 인스턴스를 포함하는 Page 인스턴스
+     */
+    public Page<PolicyListResponseDto> findByRecommendCondition(PolicyListRequestDto requestDto, Pageable pageable) {
+        return this.policyRepository.findByRecommendCondition(requestDto, pageable)
+                .orElse(new PageImpl<>(new ArrayList<>(), Pageable.ofSize(1), 0));
+    }
+
+    /**
      * 정책 ID를 통해 특정 정책의 상세 정보를 조회하는 메서드이다.
      *
      * @param bizId - 조회할 정책의 ID

@@ -54,6 +54,31 @@ public class PolicyController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "맞춤 일자리 정책 추천 리스트 조회", notes = "필터링 조건을 사용해서 추천 정책 리스트를 조회한다.\n" +
+            "pageNumber는 레거시 코드입니다. 사용될 일이 없기 때문에 넣어도 적용이 안 됩니다. 참고 바랍니다. \n" +
+            "쿼리스트링으로 전달할 것 (e.g. /api/policies/recommendation?age=22&residence=SEOUL")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "조회 성공")
+    })
+    @GetMapping("/recommendation")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "age", value = "연령", example="22")
+    })
+    public ResponseEntity<Page<PolicyListResponseDto>> getPolicyRecommended(
+            @Parameter(name = "requestDto", description = "검색어 및 필터링조건", in = QUERY, required = true)
+            @Valid PolicyListRequestDto requestDto,
+            @Parameter(name = "pageNumber", description = "넣어도 적용 안 됩니다. 되도록 비워두세요", in = QUERY)
+            @RequestParam(defaultValue = "0") Integer pageNumber,
+            @Parameter(name = "pageSize", description = "한 페이지에 조회할 개수", in = QUERY)
+            @RequestParam(defaultValue = "4") Integer pageSize
+    ){
+        Pageable pageable = PageRequest.of(0, pageSize);
+
+        Page<PolicyListResponseDto> response = this.policyService.findByRecommendCondition(requestDto, pageable);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "정책 상세 조회", notes = "정책 ID를 사용해서 해당 정책의 상세 정보를 조회한다.\n" +
             "Path variable로 전달할 것 (e.g. /api/policies/R2023050912273")
     @ApiResponses({
